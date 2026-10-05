@@ -1,0 +1,203 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <section class="form-section" aria-labelledby="employee-section-title">
+    <div class="section-heading">
+      <span class="section-index" aria-hidden="true">01</span>
+      <div>
+        <h2 id="employee-section-title">Employee information</h2>
+        <p>Tell us how you would like to appear on your card.</p>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="employee-name">Full name <span aria-hidden="true">*</span></label>
+        <input
+          id="employee-name"
+          class="form-control"
+          type="text"
+          formControlName="name"
+          autocomplete="name"
+          placeholder="e.g. Kumaresh Anandan"
+          [attr.aria-invalid]="hasError('name', 'required') || hasError('name', 'minlength')"
+          aria-describedby="employee-name-error"
+        />
+        <div class="field-error" id="employee-name-error" aria-live="polite">
+          @if (hasError('name', 'required')) { Enter your full name. }
+          @else if (hasError('name', 'minlength')) { Use at least 3 characters. }
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="employee-mobile">Mobile number <span aria-hidden="true">*</span></label>
+        <input
+          id="employee-mobile"
+          class="form-control"
+          type="tel"
+          formControlName="mobile"
+          autocomplete="tel"
+          inputmode="numeric"
+          maxlength="10"
+          placeholder="10-digit mobile number"
+          [attr.aria-invalid]="hasError('mobile', 'required') || hasError('mobile', 'pattern')"
+          aria-describedby="employee-mobile-error"
+        />
+        <div class="field-error" id="employee-mobile-error" aria-live="polite">
+          @if (hasError('mobile', 'required')) { Enter your mobile number. }
+          @else if (hasError('mobile', 'pattern')) { Enter exactly 10 digits. }
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="employee-email">Email address <span aria-hidden="true">*</span></label>
+        <input
+          id="employee-email"
+          class="form-control"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="you@company.com"
+          [attr.aria-invalid]="hasError('email', 'required') || hasError('email', 'email')"
+          aria-describedby="employee-email-error"
+        />
+        <div class="field-error" id="employee-email-error" aria-live="polite">
+          @if (hasError('email', 'required')) { Enter your email address. }
+          @else if (hasError('email', 'email')) { Enter a valid email address. }
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="employee-role">Role <span aria-hidden="true">*</span></label>
+        <select
+          id="employee-role"
+          class="form-select"
+          formControlName="role"
+          [attr.aria-invalid]="hasError('role', 'required')"
+          aria-describedby="employee-role-error"
+        >
+          <option [ngValue]="null" disabled>Select your role</option>
+          <option [ngValue]="EmployeeRole.CeoFounder">CEO / Founder</option>
+          <option [ngValue]="EmployeeRole.Director">Director</option>
+          <option [ngValue]="EmployeeRole.Manager">Manager</option>
+          <option [ngValue]="EmployeeRole.SalesHead">Sales Head</option>
+          <option [ngValue]="EmployeeRole.ProductHead">Product Head</option>
+          <option [ngValue]="EmployeeRole.Employee">Employee</option>
+        </select>
+        <div class="field-error" id="employee-role-error" aria-live="polite">
+          @if (hasError('role', 'required')) { Select your role. }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section" aria-labelledby="company-section-title">
+    <div class="section-heading">
+      <span class="section-index" aria-hidden="true">02</span>
+      <div>
+        <h2 id="company-section-title">Company information</h2>
+        <p>Add your official company details.</p>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="company-name">Company name <span aria-hidden="true">*</span></label>
+        <input id="company-name" class="form-control" type="text" formControlName="companyName" readonly />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="company-logo">Company logo <span aria-hidden="true">*</span></label>
+        <input
+          id="company-logo"
+          class="form-control"
+          type="file"
+          accept=".png,.jpg,.jpeg,.svg,image/png,image/jpeg,image/svg+xml"
+          aria-describedby="company-logo-help company-logo-error"
+          [attr.aria-invalid]="!!logoError() || hasError('logo', 'required')"
+          (change)="onLogoSelected($event)"
+        />
+        <span class="field-help" id="company-logo-help">PNG, JPG, JPEG, or SVG · up to 5 MB</span>
+        <div class="field-error" id="company-logo-error" aria-live="polite">
+          @if (logoError()) { {{ logoError() }} }
+          @else if (hasError('logo', 'required')) { Upload your company logo. }
+        </div>
+        @if (logoPreview(); as logo) {
+          <div class="logo-preview">
+            <img [src]="logo" alt="Preview of the uploaded company logo" />
+            <span>Logo ready</span>
+          </div>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label" for="company-address">Company address <span aria-hidden="true">*</span></label>
+        <textarea
+          id="company-address"
+          class="form-control"
+          formControlName="address"
+          rows="3"
+          autocomplete="street-address"
+          placeholder="Street, city, state, postal code, country"
+          [attr.aria-invalid]="hasError('address', 'required')"
+          aria-describedby="company-address-error"
+        ></textarea>
+        <div class="field-error" id="company-address-error" aria-live="polite">
+          @if (hasError('address', 'required')) { Enter your company address. }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section optional-section" aria-labelledby="optional-section-title">
+    <div class="section-heading">
+      <span class="section-index" aria-hidden="true">03</span>
+      <div>
+        <h2 id="optional-section-title">Optional information</h2>
+        <p>Include your professional links if you wish.</p>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="company-website">Website URL</label>
+        <input
+          id="company-website"
+          class="form-control"
+          type="url"
+          formControlName="website"
+          placeholder="https://www.example.com"
+          [attr.aria-invalid]="hasError('website', 'pattern')"
+          aria-describedby="company-website-error"
+        />
+        <div class="field-error" id="company-website-error" aria-live="polite">
+          @if (hasError('website', 'pattern')) { Enter a complete URL beginning with http:// or https://. }
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="company-linkedin">LinkedIn URL</label>
+        <input
+          id="company-linkedin"
+          class="form-control"
+          type="url"
+          formControlName="linkedin"
+          placeholder="https://www.linkedin.com/in/you"
+          [attr.aria-invalid]="hasError('linkedin', 'pattern')"
+          aria-describedby="company-linkedin-error"
+        />
+        <div class="field-error" id="company-linkedin-error" aria-live="polite">
+          @if (hasError('linkedin', 'pattern')) { Enter a complete URL beginning with http:// or https://. }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="form-actions">
+    <span class="required-note"><span aria-hidden="true">*</span> Required fields</span>
+    <button class="btn btn-primary generate-button" type="submit" [disabled]="form.invalid">
+      <span>Generate card</span>
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M3.5 10h12m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" />
+      </svg>
+    </button>
+  </div>
+</form>

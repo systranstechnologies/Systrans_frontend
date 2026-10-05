@@ -1,0 +1,17 @@
+{
+  "name": "SysTrans Technologies",
+  "short_name": "SysTrans",
+  "description": "Enterprise software and innovation company website for SysTrans Technologies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030914",
+  "theme_color": "#030914",
+  "icons": [
+    {
+      "src": "/assets/images/logo/systranstechnologies-logo.png",
+      "sizes": "768x768",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+<section class="section-shell page-header" appReveal>
+  <div class="container">
+    <div class="breadcrumbs">
+      <a routerLink="/home">Home</a>
+      <span>/</span>
+      <span>Careers</span>
+    </div>
+    <h1>Build with a team that values innovation.</h1>
+    <p class="lead">We’re looking for curious, high-performing people who enjoy solving complex business and product challenges.</p>
+  </div>
+</section>
+
+<section class="section-shell" appReveal>
+  <div class="container">
+    @if (loading()) {
+      <p class="careers-message" role="status">Loading current opportunities…</p>
+    } @else if (error()) {
+      <p class="careers-message careers-error" role="alert">{{ error() }}</p>
+    } @else if (jobs().length === 0) {
+      <div class="careers-empty">
+        <h2>No open positions right now</h2>
+        <p>There are no current vacancies. Please check back soon.</p>
+      </div>
+    } @else {
+      <div class="careers-grid">
+        @for (job of jobs(); track job.id) {
+          <article class="job-card">
+            <span class="meta">{{ job.department }} · {{ job.employmentType }}</span>
+            <h3>{{ job.title }}</h3>
+            <p class="job-card-meta">{{ job.location }} · {{ job.workplaceType }} · {{ job.experienceLevel }}</p>
+            <p>{{ job.summary }}</p>
+            <div class="job-card-actions">
+              <button class="job-details-button" type="button" (click)="openJobDetails(job)">View full details</button>
+              <a class="btn btn-primary" [href]="applicationLink(job)">Apply now</a>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<dialog #jobDetailsDialog class="job-details-dialog" aria-labelledby="job-details-title" (click)="closeOnBackdrop($event)">
+  @if (selectedJob(); as job) {
+    <div class="job-details-dialog-content">
+      <button class="job-details-close" type="button" aria-label="Close job details" (click)="closeJobDetails()">×</button>
+      <span class="meta">{{ job.department }} · {{ job.employmentType }}</span>
+      <h2 id="job-details-title">{{ job.title }}</h2>
+      <p class="job-card-meta">{{ job.location }} · {{ job.workplaceType }} · {{ job.experienceLevel }}</p>
+      @if (job.salaryRange) {
+        <p><strong>Compensation:</strong> {{ job.salaryRange }}</p>
+      }
+      <h3>About the role</h3>
+      <p>{{ job.description }}</p>
+      @if (job.responsibilities) {
+        <h3>Responsibilities</h3>
+        <p>{{ job.responsibilities }}</p>
+      }
+      <h3>Qualifications</h3>
+      <p>{{ job.requirements }}</p>
+      @if (job.benefits) {
+        <h3>Benefits</h3>
+        <p>{{ job.benefits }}</p>
+      }
+      @if (job.closingDate) {
+        <p><strong>Apply by:</strong> {{ job.closingDate }}</p>
+      }
+      <a class="btn btn-primary" [href]="applicationLink(job)" (click)="closeJobDetails()">Apply now</a>
+    </div>
+  }
+</dialog>

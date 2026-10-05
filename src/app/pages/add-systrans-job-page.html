@@ -1,0 +1,130 @@
+<section class="section-shell page-header" aria-labelledby="job-admin-title">
+  <div class="container job-admin-container">
+    <div class="breadcrumbs">
+      <a routerLink="/home">Home</a>
+      <span>/</span>
+      <a routerLink="/careers">Careers</a>
+      <span>/</span>
+      <span>Job admin</span>
+    </div>
+
+    @if (checkingSession()) {
+      <p class="careers-message" role="status">Checking admin access…</p>
+    } @else if (!authenticated()) {
+      <div class="job-admin-card">
+        <span class="eyebrow">Restricted access</span>
+        <h1 id="job-admin-title">Admin sign in</h1>
+        <p>Sign in to add a vacancy to the SysTrans careers page.</p>
+        @if (error()) {
+          <p class="careers-error" role="alert">{{ error() }}</p>
+        }
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <label class="job-form-field">
+            <span>Admin password</span>
+            <input type="password" formControlName="password" autocomplete="current-password" required />
+          </label>
+          <button class="btn btn-primary" type="submit" [disabled]="busy()">
+            {{ busy() ? 'Signing in…' : 'Sign in' }}
+          </button>
+        </form>
+      </div>
+    } @else {
+      <div class="job-admin-heading">
+        <div>
+          <span class="eyebrow">Careers management</span>
+          <h1 id="job-admin-title">Add a vacancy</h1>
+          <p class="lead">Complete the role details. Once saved, it will appear on the careers page.</p>
+        </div>
+        <button class="btn btn-secondary" type="button" (click)="logout()" [disabled]="busy()">Sign out</button>
+      </div>
+
+      @if (error()) {
+        <p class="careers-error" role="alert">{{ error() }}</p>
+      }
+
+      <form class="job-admin-card job-form" [formGroup]="jobForm" (ngSubmit)="saveJob()">
+        <h2>Role details</h2>
+        <div class="job-form-grid">
+          <label class="job-form-field">
+            <span>Job title *</span>
+            <input type="text" formControlName="title" maxlength="200" required />
+          </label>
+          <label class="job-form-field">
+            <span>Department *</span>
+            <input type="text" formControlName="department" maxlength="100" required />
+          </label>
+          <label class="job-form-field">
+            <span>Location *</span>
+            <input type="text" formControlName="location" maxlength="160" required />
+          </label>
+          <label class="job-form-field">
+            <span>Employment type *</span>
+            <select formControlName="employmentType" required>
+              <option value="" disabled>Select employment type</option>
+              <option>Full-time</option>
+              <option>Part-time</option>
+              <option>Contract</option>
+              <option>Internship</option>
+              <option>Temporary</option>
+            </select>
+          </label>
+          <label class="job-form-field">
+            <span>Work arrangement *</span>
+            <select formControlName="workplaceType" required>
+              <option value="" disabled>Select arrangement</option>
+              <option>On-site</option>
+              <option>Hybrid</option>
+              <option>Remote</option>
+            </select>
+          </label>
+          <label class="job-form-field">
+            <span>Experience level *</span>
+            <input type="text" formControlName="experienceLevel" maxlength="100" placeholder="e.g. 3+ years" required />
+          </label>
+          <label class="job-form-field">
+            <span>Salary / compensation</span>
+            <input type="text" formControlName="salaryRange" maxlength="160" placeholder="Optional" />
+          </label>
+          <label class="job-form-field">
+            <span>Application email *</span>
+            <input type="email" formControlName="applicationEmail" maxlength="254" required />
+          </label>
+          <label class="job-form-field">
+            <span>Application URL</span>
+            <input type="url" formControlName="applicationUrl" maxlength="2048" placeholder="Optional" />
+          </label>
+          <label class="job-form-field">
+            <span>Application deadline</span>
+            <input type="date" formControlName="closingDate" />
+          </label>
+          <label class="job-form-field job-form-field-wide">
+            <span>Short summary *</span>
+            <textarea formControlName="summary" rows="3" maxlength="1000" required></textarea>
+          </label>
+          <label class="job-form-field job-form-field-wide">
+            <span>Full job description *</span>
+            <textarea formControlName="description" rows="6" required></textarea>
+          </label>
+          <label class="job-form-field job-form-field-wide">
+            <span>Responsibilities</span>
+            <textarea formControlName="responsibilities" rows="5" placeholder="Optional; use a new line for each item"></textarea>
+          </label>
+          <label class="job-form-field job-form-field-wide">
+            <span>Qualifications and requirements *</span>
+            <textarea formControlName="requirements" rows="5" required></textarea>
+          </label>
+          <label class="job-form-field job-form-field-wide">
+            <span>Benefits</span>
+            <textarea formControlName="benefits" rows="4" placeholder="Optional"></textarea>
+          </label>
+        </div>
+        <div class="job-form-actions">
+          <a class="btn btn-secondary" routerLink="/careers">Cancel</a>
+          <button class="btn btn-primary" type="submit" [disabled]="busy()">
+            {{ busy() ? 'Saving…' : 'Save vacancy' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</section>
