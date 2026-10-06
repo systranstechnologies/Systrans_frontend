@@ -1192,6 +1192,19 @@ button:focus-visible {
   .footer-bottom {
     flex-direction: column;
   }
+
+  .footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .footer-links > div {
+    min-width: 0;
+  }
+
+  .footer-links a {
+    overflow-wrap: anywhere;
+  }
 }
 
 .site-shell {
@@ -2610,9 +2623,6 @@ button:focus-visible {
   .mock-phone { width: 130px; height: 270px; }
   .property-window { width: 74%; }
   .cta-orb { width: 290px; height: 290px; }
-  .footer-links { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-  .footer-links > div { min-width: 0; }
-  .footer-links a { overflow-wrap: anywhere; }
 }
 
 @media (prefers-reduced-motion: reduce) {

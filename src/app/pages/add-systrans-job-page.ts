@@ -65,8 +65,14 @@ export class AddSysTransJobPage implements OnInit {
         this.busy.set(false);
         this.loginForm.reset();
       },
-      error: (error: { status?: number }) => {
-        this.error.set(error.status === 401 ? 'The admin password is incorrect.' : 'Sign-in failed. Please try again.');
+      error: (error: { status?: number; message?: string }) => {
+        this.error.set(
+          error.status === 401
+            ? 'The admin password is incorrect.'
+            : error.message?.includes('session token')
+              ? error.message
+              : 'Sign-in failed. Please try again.',
+        );
         this.busy.set(false);
       },
     });

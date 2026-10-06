@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { map, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface Job {
@@ -27,6 +28,7 @@ export type NewJob = Omit<Job, 'id' | 'createdAt'>;
 @Injectable({ providedIn: 'root' })
 export class JobsService {
   private readonly http = inject(HttpClient);
+  private readonly adminTokenKey = 'systrans-admin-token';
 
   list() {
     return this.http.get<Job[]>(`${environment.apiBaseUrl}/jobs`);
@@ -34,15 +36,22 @@ export class JobsService {
 
   isAdmin() {
     return this.http.get<{ authenticated: boolean }>(`${environment.apiBaseUrl}/admin/session`, {
-      withCredentials: true,
+      headers: this.adminHeaders(),
     });
   }
 
   login(password: string) {
-    return this.http.post<{ authenticated: boolean }>(
+    return this.http.post<{ authenticated: boolean; token: string }>(
       `${environment.apiBaseUrl}/admin/login`,
       { password },
-      { withCredentials: true },
+    ).pipe(
+      map(({ authenticated, token }) => {
+        if (!authenticated || typeof token !== 'string' || !/^\d+\.[a-f\d]{64}$/i.test(token)) {
+          throw new Error('The Spring API did not return a valid admin session token. Redeploy the latest backend.');
+        }
+        return token;
+      }),
+      tap((token) => sessionStorage.setItem(this.adminTokenKey, token)),
     );
   }
 
@@ -50,13 +59,20 @@ export class JobsService {
     return this.http.post<{ authenticated: boolean }>(
       `${environment.apiBaseUrl}/admin/logout`,
       {},
-      { withCredentials: true },
+      { headers: this.adminHeaders() },
+    ).pipe(
+      tap(() => sessionStorage.removeItem(this.adminTokenKey)),
     );
   }
 
   create(job: NewJob) {
     return this.http.post<{ id: number }>(`${environment.apiBaseUrl}/jobs`, job, {
-      withCredentials: true,
+      headers: this.adminHeaders(),
     });
+  }
+
+  private adminHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem(this.adminTokenKey);
+    return token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : new HttpHeaders();
   }
 }

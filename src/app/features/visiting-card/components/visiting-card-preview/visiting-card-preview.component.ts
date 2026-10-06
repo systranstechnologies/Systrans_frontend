@@ -29,11 +29,9 @@ export class VisitingCardPreviewComponent {
   });
   protected readonly siteUrl = 'https://systranstechnologies.netlify.app';
   protected readonly services = [
-    'Software Development',
-    'Web Application Development',
-    'Mobile App Development',
+    'Software & Web Apps',
+    'Mobile Apps',
     'Enterprise Solutions',
-    'Cloud Services',
-    'Digital Transformation',
+    'Cloud & Digital Transformation',
   ];
 }
